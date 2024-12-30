@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://b14w2a54ibigp"]
+
+[ext_resource type="Texture2D" uid="uid://cq6f3myufi6sf" path="res://Objects/Sprites/end.png" id="1_ouqg6"]
+[ext_resource type="Script" path="res://Objects/Scripts/end_beacon.gd" id="1_u6luo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ce1eo"]
+size = Vector2(1000, 1000)
+
+[node name="EndBeacon" type="Area2D"]
+script = ExtResource("1_u6luo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_ce1eo")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ouqg6")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

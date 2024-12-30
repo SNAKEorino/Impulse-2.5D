@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://s6gk58a2jq7b"]
+
+[ext_resource type="Script" path="res://Objects/Scripts/checkpointsetter.gd" id="1_r5tbi"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_deypd"]
+size = Vector2(252, 375)
+
+[node name="softcpoint" type="Area2D" node_paths=PackedStringArray("selftimer")]
+script = ExtResource("1_r5tbi")
+selftimer = NodePath("Checkpoint Timer")
+
+[node name="pointcollision" type="CollisionShape2D" parent="."]
+position = Vector2(-34, 0)
+shape = SubResource("RectangleShape2D_deypd")
+
+[node name="Checkpoint Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="Marker2D" type="Marker2D" parent="."]
+
+[connection signal="timeout" from="Checkpoint Timer" to="." method="_on_checkpoint_timer_timeout"]

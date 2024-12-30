@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3n3oneo8xree"]
+
+[ext_resource type="Theme" uid="uid://bvrxlav3f4ee2" path="res://UI/Scenes/healththeme.tres" id="1_7kw6c"]
+[ext_resource type="Script" path="res://Entities/Scripts/weapon.gd" id="2_txkjh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_msjn8"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2miln"]
+bg_color = Color(0.215686, 0.611765, 1, 1)
+
+[node name="WeaponBar" type="ProgressBar"]
+offset_left = -4000.0
+offset_top = -4300.0
+offset_right = -1000.0
+offset_bottom = -4150.0
+theme = ExtResource("1_7kw6c")
+theme_override_styles/background = SubResource("StyleBoxFlat_msjn8")
+theme_override_styles/fill = SubResource("StyleBoxFlat_2miln")
+step = 1.0
+rounded = true
+show_percentage = false
+script = ExtResource("2_txkjh")

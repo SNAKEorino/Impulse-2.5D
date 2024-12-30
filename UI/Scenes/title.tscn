@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://dx38b3pq5uur5"]
+
+[ext_resource type="Script" path="res://UI/Scripts/title.gd" id="1_g2w6a"]
+[ext_resource type="PackedScene" uid="uid://bjuceehcv0cxl" path="res://UI/Scenes/main_menu.tscn" id="2_8oqnu"]
+[ext_resource type="Texture2D" uid="uid://ddxyd4q65nkd1" path="res://Levels/Sprites/titlescreen.png" id="2_ygkel"]
+
+[node name="TitleScreen" type="Node"]
+script = ExtResource("1_g2w6a")
+
+[node name="Main Menu" type="CanvasLayer" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Main Menu"]
+position = Vector2(2560, 1440)
+scale = Vector2(2, 2)
+texture = ExtResource("2_ygkel")
+
+[node name="Label" type="Label" parent="Main Menu"]
+offset_left = 1174.0
+offset_top = 829.0
+offset_right = 3251.0
+offset_bottom = 1238.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 300
+text = "Project Impulse
+"
+
+[node name="Main Menu" parent="Main Menu" instance=ExtResource("2_8oqnu")]
+offset_left = 875.0
+offset_top = 1579.0
+offset_right = 915.0
+offset_bottom = 1619.0
