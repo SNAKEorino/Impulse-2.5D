@@ -1,0 +1,15 @@
+extends Node
+signal _moving()
+signal _grantenergy(amount)
+signal _setsoftcheckpointposition(position)
+signal _initiaterespawn
+signal _airborne
+signal _grounded
+signal _jumping
+signal _fell
+signal _got_hit(knockback_direction)
+signal _target_down(target)
+signal _stompbounce
+signal _enemybounce(type)
+signal _energyChange
+signal _crouchJump

@@ -1,0 +1,409 @@
+[gd_scene load_steps=34 format=3 uid="uid://c8myaek2rna14"]
+
+[ext_resource type="Script" path="res://Entities/Scripts/player_2_dot_5d.gd" id="1_wj7v6"]
+[ext_resource type="Script" path="res://Entities/Scripts/jump_area.gd" id="2_0wdtw"]
+[ext_resource type="PackedScene" uid="uid://b0kcof1huby2p" path="res://UI/Scenes/healthbar.tscn" id="2_6fx5m"]
+[ext_resource type="Script" path="res://Entities/Scripts/boost_area.gd" id="3_bs785"]
+[ext_resource type="PackedScene" uid="uid://c3n3oneo8xree" path="res://UI/Scenes/weaponbar.tscn" id="3_isl7v"]
+[ext_resource type="Script" path="res://Entities/Scripts/Label.gd" id="4_rxff2"]
+[ext_resource type="Script" path="res://Entities/Scripts/PlayerDamageable.gd" id="5_yj3yp"]
+[ext_resource type="Script" path="res://Entities/Scripts/CharaStateMachine.gd" id="6_r1il2"]
+[ext_resource type="Script" path="res://Entities/Scripts/GroundState.gd" id="7_qk3tv"]
+[ext_resource type="Script" path="res://Entities/Scripts/Hit.gd" id="8_w125b"]
+[ext_resource type="PackedScene" uid="uid://djy44aas75471" path="res://Entities/Scenes/p_enemy_1.tscn" id="9_ixe1x"]
+[ext_resource type="Script" path="res://Entities/Scripts/AirState.gd" id="10_puqrk"]
+[ext_resource type="Script" path="res://Entities/Scripts/GroundBoost.gd" id="11_4w2sv"]
+[ext_resource type="Script" path="res://Entities/Scripts/AirBoost.gd" id="12_s1bjh"]
+[ext_resource type="Script" path="res://Entities/Scripts/omni_boost.gd" id="13_y5qvc"]
+[ext_resource type="Script" path="res://Entities/Scripts/Stomp.gd" id="14_o8ayu"]
+[ext_resource type="Script" path="res://Entities/Scripts/HomingAttack.gd" id="15_hvavu"]
+[ext_resource type="PackedScene" uid="uid://yyklm0l8vfrp" path="res://Objects/Scenes/signalbus.tscn" id="16_7o6is"]
+[ext_resource type="Script" path="res://Entities/Scripts/state_debug_label.gd" id="17_pa35t"]
+[ext_resource type="Texture2D" uid="uid://clperiym2ufin" path="res://Entities/Sprites/reticle.png" id="18_8qahw"]
+[ext_resource type="Script" path="res://Entities/Scripts/crouch.gd" id="18_s1soi"]
+[ext_resource type="Script" path="res://Entities/Scripts/slide.gd" id="19_2bphf"]
+[ext_resource type="Script" path="res://Entities/Scripts/slide_boost.gd" id="20_cqntk"]
+[ext_resource type="Script" path="res://Entities/Scripts/wall.gd" id="21_wm7mk"]
+[ext_resource type="Script" path="res://Entities/Scripts/wall_boost.gd" id="22_pe0ly"]
+[ext_resource type="Script" path="res://Levels/Scenes/camera_3d.gd" id="26_a440w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_234ov"]
+albedo_color = Color(0, 0.427451, 1, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_jtu0m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ljcd3"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hxmye"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g1dbe"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nke57"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rxxhx"]
+height = 2.5362
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("player", "damagecheck", "groundstate", "charaModel", "debugArrow", "boost_fx", "jumpArea", "boostArea", "bodyCollision", "energycooldown", "homingreticle", "state_machine", "ray")]
+axis_lock_linear_z = true
+slide_on_ceiling = false
+floor_constant_speed = true
+floor_block_on_wall = false
+floor_max_angle = 3.14159
+safe_margin = 0.1
+script = ExtResource("1_wj7v6")
+player = NodePath(".")
+damagecheck = NodePath("PlayerDamage")
+groundstate = NodePath("CharaStateMachine/Ground")
+charaModel = NodePath("Body")
+debugArrow = NodePath("DebugArrow")
+boost_fx = NodePath("BoostFX")
+jumpArea = NodePath("Jump Area")
+boostArea = NodePath("Boost Area")
+bodyCollision = NodePath("Body Collision")
+energycooldown = NodePath("TimerHolder/Energy_Cooldown_Timer")
+homingreticle = NodePath("HomingReticle")
+state_machine = NodePath("CharaStateMachine")
+ray = NodePath("RayCast3D")
+homing_attack_range = 30
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, -2, 0)
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 5
+
+[node name="BoostFX" type="MeshInstance3D" parent="."]
+transform = Transform3D(-8.74228e-08, 1, 0, -2, -4.37114e-08, 0, 0, 0, 0.05, 1, 0, 0)
+material_override = SubResource("StandardMaterial3D_234ov")
+transparency = 0.25
+cast_shadow = 0
+mesh = SubResource("PrismMesh_jtu0m")
+
+[node name="DebugArrow" type="MeshInstance3D" parent="."]
+transform = Transform3D(-8.74228e-08, 1, 0, -2, -4.37114e-08, 0, 0, 0, 0.05, 3, 0, 3)
+material_override = SubResource("StandardMaterial3D_ljcd3")
+transparency = 0.25
+cast_shadow = 0
+mesh = SubResource("PrismMesh_jtu0m")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_hxmye")
+
+[node name="Body Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_g1dbe")
+
+[node name="Jump Area" type="Area3D" parent="."]
+script = ExtResource("2_0wdtw")
+
+[node name="Jump Collision" type="CollisionShape3D" parent="Jump Area"]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_nke57")
+
+[node name="Boost Area" type="Area3D" parent="."]
+transform = Transform3D(2.66302, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("3_bs785")
+
+[node name="Boost Collision" type="CollisionShape3D" parent="Boost Area"]
+transform = Transform3D(-0.0236662, 1.99986, 0, -1.99986, -0.0236662, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_rxxhx")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HealthBar" parent="HUD" node_paths=PackedStringArray("damage") instance=ExtResource("2_6fx5m")]
+offset_left = 100.0
+offset_top = 700.0
+offset_right = 700.0
+offset_bottom = 790.0
+rotation = -1.5708
+damage = NodePath("../../PlayerDamage")
+
+[node name="EnergyBar" parent="HUD" node_paths=PackedStringArray("meter", "body") instance=ExtResource("3_isl7v")]
+offset_left = 150.0
+offset_top = 2600.0
+offset_right = 750.0
+offset_bottom = 2690.0
+scale = Vector2(2, 1)
+meter = NodePath(".")
+body = NodePath("../..")
+
+[node name="Stopwatch" type="Label" parent="HUD" node_paths=PackedStringArray("stopwatch")]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -285.5
+offset_right = 285.5
+offset_bottom = 140.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 100
+text = "
+"
+script = ExtResource("4_rxff2")
+stopwatch = NodePath(".")
+
+[node name="PlayerDamage" type="Node" parent="." node_paths=PackedStringArray("body", "hitstun", "invincibility", "hit_state", "charamodel")]
+script = ExtResource("5_yj3yp")
+body = NodePath("..")
+hitstun = NodePath("../CharaStateMachine/Hit/Hitstun_Timer")
+invincibility = NodePath("Invincibility_Timer")
+hit_state = NodePath("../CharaStateMachine/Hit")
+charamodel = NodePath("../Body")
+
+[node name="Invincibility_Timer" type="Timer" parent="PlayerDamage"]
+one_shot = true
+
+[node name="CharaStateMachine" type="Node" parent="." node_paths=PackedStringArray("current_state", "character", "hitstun", "hit_state", "crouch_state", "slide_state", "ground_state", "air_state", "groundboost_state", "airboost_state", "homingattack_state", "omniboost_state", "playerdamage")]
+script = ExtResource("6_r1il2")
+current_state = NodePath("Ground")
+character = NodePath("..")
+hitstun = NodePath("Hit/Hitstun_Timer")
+hit_state = NodePath("Hit")
+crouch_state = NodePath("Crouch")
+slide_state = NodePath("Slide")
+ground_state = NodePath("Ground")
+air_state = NodePath("Air")
+groundboost_state = NodePath("GroundBoost")
+airboost_state = NodePath("AirBoost")
+homingattack_state = NodePath("HomingAttack")
+omniboost_state = NodePath("OmniDash")
+playerdamage = NodePath("../PlayerDamage")
+
+[node name="Ground" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("air_state", "groundBoost_state", "hit_state", "homingattack_state", "crouch_state", "slide_state", "hitstun", "bouncetimer", "jumpcollis", "boostcollis")]
+script = ExtResource("7_qk3tv")
+air_state = NodePath("../Air")
+groundBoost_state = NodePath("../GroundBoost")
+hit_state = NodePath("../Hit")
+homingattack_state = NodePath("../HomingAttack")
+crouch_state = NodePath("../Crouch")
+slide_state = NodePath("../Slide")
+hitstun = NodePath("../Hit/Hitstun_Timer")
+bouncetimer = NodePath("bounce")
+jumpcollis = NodePath("../../Jump Area")
+boostcollis = NodePath("../../Boost Area")
+jump_height = 8.0
+jump_time_to_peak = 0.4
+jump_time_to_descent = 0.4
+bounce_height = 8.0
+bounce_time_to_peak = 0.4
+bounce_time_to_descent = 0.4
+crouchjump_height = 10.0
+crouchjump_time_to_peak = 0.4
+crouchjump_time_to_descent = 0.4
+
+[node name="bounce" type="Timer" parent="CharaStateMachine/Ground"]
+wait_time = 0.1
+one_shot = true
+
+[node name="Hit" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("hit", "ground_state", "hitstun", "air_state")]
+script = ExtResource("8_w125b")
+hit = NodePath("../../PlayerDamage")
+ground_state = NodePath("../Ground")
+hitstun = NodePath("Hitstun_Timer")
+enemycheck = ExtResource("9_ixe1x")
+air_state = NodePath("../Air")
+can_move = false
+
+[node name="Hitstun_Timer" type="Timer" parent="CharaStateMachine/Hit"]
+wait_time = 0.3
+one_shot = true
+
+[node name="Air" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "groundBoost_state", "airboost_state", "stomp_state", "homingattack_state", "omnidash_state", "wall_state", "boostcollis", "jumpcollis", "airboosttimer", "postAttackBoostLockout", "airBoostMinDur", "hitStopKindaTimer", "omniTimer")]
+script = ExtResource("10_puqrk")
+ground_state = NodePath("../Ground")
+groundBoost_state = NodePath("../GroundBoost")
+airboost_state = NodePath("../AirBoost")
+stomp_state = NodePath("../Stomp")
+homingattack_state = NodePath("../HomingAttack")
+omnidash_state = NodePath("../OmniDash")
+wall_state = NodePath("../Wall")
+boostcollis = NodePath("../../Boost Area")
+jumpcollis = NodePath("../../Jump Area")
+airboosttimer = NodePath("../AirBoost/airboostduration")
+jump_height = 7.0
+jump_time_to_peak = 0.4
+jump_time_to_descent = 0.4
+postAttackBoostLockout = NodePath("../HomingAttack/postAttackBoostLockout")
+airBoostMinDur = NodePath("../AirBoost/Air_Boost_Min_Dur")
+hitStopKindaTimer = NodePath("hitStopKindaTimer")
+omniTimer = NodePath("../OmniDash/dashTimer")
+
+[node name="hitStopKindaTimer" type="Timer" parent="CharaStateMachine/Air"]
+wait_time = 0.1
+one_shot = true
+
+[node name="GroundBoost" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "air_state", "homingattack_state", "slideboost_state", "boostcollis")]
+script = ExtResource("11_4w2sv")
+ground_state = NodePath("../Ground")
+air_state = NodePath("../Air")
+homingattack_state = NodePath("../HomingAttack")
+slideboost_state = NodePath("../SlideBoost")
+boostcollis = NodePath("../../Boost Area")
+
+[node name="AirBoost" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "air_state", "stomp_state", "homingattack_state", "boostcollis", "airboosttimer", "airBoostMinDur")]
+script = ExtResource("12_s1bjh")
+ground_state = NodePath("../Ground")
+air_state = NodePath("../Air")
+stomp_state = NodePath("../Stomp")
+homingattack_state = NodePath("../HomingAttack")
+boostcollis = NodePath("../../Boost Area")
+airboosttimer = NodePath("airboostduration")
+airBoostMinDur = NodePath("Air_Boost_Min_Dur")
+
+[node name="airboostduration" type="Timer" parent="CharaStateMachine/AirBoost"]
+wait_time = 0.5
+one_shot = true
+
+[node name="Air_Boost_Min_Dur" type="Timer" parent="CharaStateMachine/AirBoost"]
+wait_time = 0.5
+one_shot = true
+
+[node name="OmniDash" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "air_state", "boostcollis", "dashtimer", "hitStopKindaTimer")]
+script = ExtResource("13_y5qvc")
+ground_state = NodePath("../Ground")
+air_state = NodePath("../Air")
+boostcollis = NodePath("../../Boost Area")
+dashtimer = NodePath("dashTimer")
+hitStopKindaTimer = NodePath("../Air/hitStopKindaTimer")
+can_move = false
+
+[node name="dashTimer" type="Timer" parent="CharaStateMachine/OmniDash"]
+wait_time = 0.15
+one_shot = true
+
+[node name="Stomp" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "air_state", "jumpcollis")]
+script = ExtResource("14_o8ayu")
+ground_state = NodePath("../Ground")
+air_state = NodePath("../Air")
+jumpcollis = NodePath("../../Jump Area")
+
+[node name="HomingAttack" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("damageable", "ground_state", "air_state", "homing_attack_cooldown", "boostcollis", "jumpcollis", "postAttackBoostLockout")]
+script = ExtResource("15_hvavu")
+damageable = NodePath("../../PlayerDamage")
+ground_state = NodePath("../Ground")
+air_state = NodePath("../Air")
+homing_attack_cooldown = NodePath("../../TimerHolder/H_Attack_Cooldown")
+boostcollis = NodePath("../../Boost Area")
+jumpcollis = NodePath("../../Jump Area")
+postAttackBoostLockout = NodePath("postAttackBoostLockout")
+can_move = false
+
+[node name="postAttackBoostLockout" type="Timer" parent="CharaStateMachine/HomingAttack"]
+wait_time = 0.5
+one_shot = true
+
+[node name="Crouch" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("charaModel", "charaCollision", "ground_state", "slide_state", "air_state", "kickTimer")]
+script = ExtResource("18_s1soi")
+charaModel = NodePath("../../Body")
+charaCollision = NodePath("../../Body Collision")
+ground_state = NodePath("../Ground")
+slide_state = NodePath("../Slide")
+air_state = NodePath("../Air")
+kickTimer = NodePath("../Slide/kickTimer")
+can_move = false
+
+[node name="Slide" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("charaModel", "charaCollision", "ground_state", "crouch_state", "air_state")]
+script = ExtResource("19_2bphf")
+charaModel = NodePath("../../Body")
+charaCollision = NodePath("../../Body Collision")
+ground_state = NodePath("../Ground")
+crouch_state = NodePath("../Crouch")
+air_state = NodePath("../Air")
+can_move = false
+
+[node name="kickTimer" type="Timer" parent="CharaStateMachine/Slide"]
+wait_time = 0.4
+one_shot = true
+
+[node name="SlideBoost" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("charaModel", "charaCollision", "ground_state", "crouch_state", "air_state", "slide_state", "groundboost_state")]
+script = ExtResource("20_cqntk")
+charaModel = NodePath("../../Body")
+charaCollision = NodePath("../../Body Collision")
+ground_state = NodePath("../Ground")
+crouch_state = NodePath("../Crouch")
+air_state = NodePath("../Air")
+slide_state = NodePath("../Slide")
+groundboost_state = NodePath("../GroundBoost")
+
+[node name="Wall" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "wallboost_state", "air_state", "stomp_state", "homingattack_state", "wallJumpTimeout")]
+script = ExtResource("21_wm7mk")
+ground_state = NodePath("../Ground")
+wallboost_state = NodePath("../WallBoost")
+air_state = NodePath("../Air")
+stomp_state = NodePath("../Stomp")
+homingattack_state = NodePath("../HomingAttack")
+jump_height = 3.0
+jump_time_to_peak = 0.1
+jump_time_to_descent = 0.1
+wallJumpTimeout = NodePath("wallJumpTimeout")
+can_move = false
+
+[node name="wallJumpTimeout" type="Timer" parent="CharaStateMachine/Wall"]
+wait_time = 0.25
+one_shot = true
+
+[node name="WallBoost" type="Node" parent="CharaStateMachine" node_paths=PackedStringArray("ground_state", "wall_state", "air_state", "stomp_state", "homingattack_state", "wallJumpTimeout")]
+script = ExtResource("22_pe0ly")
+ground_state = NodePath("../Ground")
+wall_state = NodePath("../Wall")
+air_state = NodePath("../Air")
+stomp_state = NodePath("../Stomp")
+homingattack_state = NodePath("../HomingAttack")
+jump_height = 6.0
+jump_time_to_peak = 0.1
+jump_time_to_descent = 0.1
+wallJumpTimeout = NodePath("../Wall/wallJumpTimeout")
+
+[node name="SignalBus" parent="." instance=ExtResource("16_7o6is")]
+
+[node name="TimerHolder" type="Node" parent="."]
+
+[node name="Checkpoint_Set_Timer" type="Timer" parent="TimerHolder"]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="Energy_Cooldown_Timer" type="Timer" parent="TimerHolder"]
+wait_time = 2.0
+one_shot = true
+
+[node name="H_Attack_Cooldown" type="Timer" parent="TimerHolder"]
+wait_time = 0.25
+one_shot = true
+
+[node name="state_debug_label" type="Label3D" parent="." node_paths=PackedStringArray("state_machine", "chara")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25216, 1.87741, 0)
+pixel_size = 0.015
+script = ExtResource("17_pa35t")
+state_machine = NodePath("../CharaStateMachine")
+chara = NodePath("..")
+
+[node name="checkpoint_position" type="Marker3D" parent="."]
+
+[node name="HomingReticle" type="Sprite3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+texture = ExtResource("18_8qahw")
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("cam")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5, 20)
+fov = 90.0
+script = ExtResource("26_a440w")
+cam = NodePath(".")
+
+[node name="rotate volume" type="Timer" parent="Camera3D"]
+wait_time = 5.0
+one_shot = true
+
+[node name="Pivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0503, 0, 0)
+
+[connection signal="body_entered" from="Jump Area" to="Jump Area" method="_on_body_entered"]
+[connection signal="body_entered" from="Boost Area" to="Boost Area" method="_on_body_entered"]
+[connection signal="timeout" from="PlayerDamage/Invincibility_Timer" to="PlayerDamage" method="_on_invincibility_timer_timeout"]
+[connection signal="timeout" from="CharaStateMachine/Ground/bounce" to="CharaStateMachine/Ground" method="_on_bounce_timeout"]
+[connection signal="timeout" from="CharaStateMachine/Hit/Hitstun_Timer" to="CharaStateMachine/Hit" method="_on_hitstun_timer_timeout"]
+[connection signal="timeout" from="CharaStateMachine/Air/hitStopKindaTimer" to="CharaStateMachine/Air" method="_on_hit_stop_kinda_timer_timeout"]
+[connection signal="timeout" from="CharaStateMachine/AirBoost/airboostduration" to="CharaStateMachine/AirBoost" method="_on_airboostduration_timeout"]
+[connection signal="timeout" from="CharaStateMachine/OmniDash/dashTimer" to="CharaStateMachine/OmniDash" method="_on_dashtimer_timeout"]
+[connection signal="timeout" from="CharaStateMachine/HomingAttack/postAttackBoostLockout" to="CharaStateMachine/HomingAttack" method="_on_post_attack_boost_lockout_timeout"]
+[connection signal="timeout" from="CharaStateMachine/Slide/kickTimer" to="CharaStateMachine/Slide" method="_on_kick_timer_timeout"]
+[connection signal="timeout" from="TimerHolder/Energy_Cooldown_Timer" to="." method="_on_energy_cooldown_timeout"]
+[connection signal="timeout" from="Camera3D/rotate volume" to="Camera3D" method="_on_rotate_volume_timeout"]

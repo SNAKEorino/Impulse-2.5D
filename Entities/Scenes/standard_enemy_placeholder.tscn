@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://bpbr5u11456tg"]
+
+[ext_resource type="Script" path="res://Entities/Scripts/standard_enemy_placeholder.gd" id="1_wp2bi"]
+[ext_resource type="Script" path="res://Entities/Scripts/Damageable.gd" id="2_d0ivm"]
+[ext_resource type="Script" path="res://Entities/Scripts/hitbox.gd" id="3_k6ovw"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ka83l"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_pt23d"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8olxt"]
+height = 2.34305
+
+[node name="standardEnemyPlaceholder" type="CharacterBody3D" node_paths=PackedStringArray("turn")]
+script = ExtResource("1_wp2bi")
+turn = NodePath("Turn")
+
+[node name="EnemyModel" type="MeshInstance3D" parent="."]
+transform = Transform3D(-6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 0, 0, 1.5, 0.215488, 0, 0)
+mesh = SubResource("CapsuleMesh_ka83l")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyModel"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 4.07321e-08, 0.931842, 0)
+mesh = SubResource("SphereMesh_pt23d")
+skeleton = NodePath("../..")
+
+[node name="Collission" type="CollisionShape3D" parent="."]
+transform = Transform3D(-6.55671e-08, -1.555, 0, 1.5, -6.79712e-08, 0, 0, 0, 1.5, -0.104832, 0, 0)
+shape = SubResource("CapsuleShape3D_8olxt")
+
+[node name="Hitbox" type="Area3D" parent="." node_paths=PackedStringArray("main_body")]
+transform = Transform3D(1.5, 0, 0, 0, 1.555, 0, 0, 0, 1.5, -0.104832, 0, 0)
+script = ExtResource("3_k6ovw")
+main_body = NodePath("..")
+
+[node name="HitboxCollider" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(-4.37114e-08, -1.05, 0, 1, -4.5897e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_8olxt")
+
+[node name="Damageable" type="Node" parent="." node_paths=PackedStringArray("charaBody", "charaModel")]
+script = ExtResource("2_d0ivm")
+charaBody = NodePath("..")
+charaModel = NodePath("../EnemyModel")
+
+[node name="Turn" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="body_entered" from="Hitbox" to="Hitbox" method="_on_body_entered"]
+[connection signal="timeout" from="Turn" to="." method="_on_turn_timeout"]

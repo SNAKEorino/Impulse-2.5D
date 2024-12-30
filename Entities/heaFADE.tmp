@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://b0kcof1huby2p"]
+
+[ext_resource type="Theme" uid="uid://bvrxlav3f4ee2" path="res://healththeme.tres" id="1_fv7vt"]
+[ext_resource type="Script" path="res://Entities/ProgressBar.gd" id="2_kh1kj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o85f0"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1f2t1"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ProgressBar" type="ProgressBar" parent="." node_paths=PackedStringArray("meter")]
+layout_mode = 0
+offset_right = 3311.0
+offset_bottom = 204.0
+theme = ExtResource("1_fv7vt")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/background = SubResource("StyleBoxFlat_o85f0")
+theme_override_styles/fill = SubResource("StyleBoxFlat_1f2t1")
+max_value = 10.0
+step = 1.0
+rounded = true
+script = ExtResource("2_kh1kj")
+meter = NodePath(".")

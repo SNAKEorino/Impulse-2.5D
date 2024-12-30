@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://djy44aas75471"]
+
+[ext_resource type="Texture2D" uid="uid://dasv2yrgx3s1x" path="res://Entities/Sprites/dingus.png" id="1_r8m11"]
+[ext_resource type="Script" path="res://Entities/Scripts/Damageable.gd" id="2_u5xin"]
+[ext_resource type="PackedScene" uid="uid://cyojlvypxbhqr" path="res://Entities/Scenes/enemyhitbox.tscn" id="3_2m13x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d6n6l"]
+size = Vector2(437, 354)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_22b0r"]
+size = Vector2(828, 690)
+
+[node name="PEnemy1" type="CharacterBody2D"]
+position = Vector2(16, 206)
+
+[node name="Enemyhitbox" parent="." node_paths=PackedStringArray("main_body") instance=ExtResource("3_2m13x")]
+position = Vector2(0.00012207, 12)
+scale = Vector2(2, 2)
+main_body = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemyhitbox"]
+position = Vector2(0.499939, 0)
+shape = SubResource("RectangleShape2D_d6n6l")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(50.0001, -1095)
+scale = Vector2(2.872, 3)
+texture = ExtResource("1_r8m11")
+
+[node name="Damageable" type="Node" parent="."]
+script = ExtResource("2_u5xin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-3.99994, 12)
+shape = SubResource("RectangleShape2D_22b0r")
+
+[node name="Turn" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="timeout" from="Turn" to="." method="_on_turn_timeout"]
+
+[editable path="Enemyhitbox"]

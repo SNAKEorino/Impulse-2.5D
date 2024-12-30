@@ -1,0 +1,52 @@
+[gd_scene load_steps=8 format=3 uid="uid://dge7nbfy0epb6"]
+
+[ext_resource type="PackedScene" uid="uid://cyojlvypxbhqr" path="res://Entities/Scenes/enemyhitbox.tscn" id="1_a6wmc"]
+[ext_resource type="Script" path="res://Entities/Scripts/turret.gd" id="1_xq8x3"]
+[ext_resource type="PackedScene" uid="uid://cwuw8urr3abpj" path="res://Weapons/Scenes/EnemyShot.tscn" id="2_aul8n"]
+[ext_resource type="Script" path="res://Entities/Scripts/Damageable.gd" id="2_w0rv8"]
+[ext_resource type="Texture2D" uid="uid://hbcq1pd4a5sa" path="res://Entities/Sprites/turret.png" id="3_6uyec"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rd5iu"]
+size = Vector2(385.5, 287.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uyf53"]
+size = Vector2(727, 558)
+
+[node name="Turret" type="CharacterBody2D" node_paths=PackedStringArray("bposition", "shoottimer")]
+script = ExtResource("1_xq8x3")
+shot = ExtResource("2_aul8n")
+bposition = NodePath("strd_bullet_position")
+shoottimer = NodePath("Shoot")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(11, -14.5)
+scale = Vector2(1.448, 1.3875)
+texture = ExtResource("3_6uyec")
+
+[node name="Enemyhitbox" parent="." node_paths=PackedStringArray("main_body") instance=ExtResource("1_a6wmc")]
+position = Vector2(0.00012207, 12)
+scale = Vector2(2, 2)
+main_body = NodePath("..")
+
+[node name="hitbox" type="CollisionShape2D" parent="Enemyhitbox"]
+position = Vector2(4.24994, -18.75)
+shape = SubResource("RectangleShape2D_rd5iu")
+
+[node name="Damageable" type="Node" parent="." node_paths=PackedStringArray("charabody", "charasprite")]
+script = ExtResource("2_w0rv8")
+charabody = NodePath("..")
+charasprite = NodePath("../Sprite2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8.5, -15)
+shape = SubResource("RectangleShape2D_uyf53")
+
+[node name="Shoot" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="strd_bullet_position" type="Marker2D" parent="."]
+
+[connection signal="timeout" from="Shoot" to="." method="_on_shoot_timeout"]
+
+[editable path="Enemyhitbox"]
